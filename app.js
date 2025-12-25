@@ -1,8 +1,8 @@
 // === BYBIT API CONFIGURATION ===
 // ⚠️ HARDCODED API - Only for personal use, don't share this file!
 const BYBIT_CONFIG = {
-    apiKey: 'cXqn4FiaHUI0BQkA8o',
-    apiSecret: 'jQK54TfMKM1joIvG45udYZ3ND0HpB0RaThG6',
+    apiKey: 'MASUKKAN_API_KEY_KAMU_DISINI',
+    apiSecret: 'MASUKKAN_API_SECRET_KAMU_DISINI',
     testnet: false
 };
 
@@ -405,32 +405,37 @@ function renderTradeHistory() {
     tbody.innerHTML = AppState.trades.map(trade => {
         const date = new Date(trade.date).toLocaleDateString();
         const symbol = trade.symbol || '-';
-        const typeBadge = trade.type === 'long' ? '<span class="badge badge-long">Long</span>' : '<span class="badge badge-short">Short</span>';
         
-        let resultBadge = '';
-        if (trade.result === 'win') resultBadge = '<span class="badge badge-win">Win</span>';
-        else if (trade.result === 'loss') resultBadge = '<span class="badge badge-loss">Loss</span>';
-        else if (trade.result === 'breakeven') resultBadge = '<span class="badge badge-breakeven">BE</span>';
-        else resultBadge = '<span class="badge">Pending</span>';
+        // Simple badges without nested spans
+        const typeText = trade.type === 'long' ? 'LONG' : 'SHORT';
+        const typeClass = trade.type === 'long' ? 'badge-long' : 'badge-short';
+        
+        let resultText = '';
+        let resultClass = '';
+        if (trade.result === 'win') { resultText = 'WIN'; resultClass = 'badge-win'; }
+        else if (trade.result === 'loss') { resultText = 'LOSS'; resultClass = 'badge-loss'; }
+        else if (trade.result === 'breakeven') { resultText = 'BE'; resultClass = 'badge-breakeven'; }
+        else { resultText = 'PENDING'; resultClass = ''; }
 
         const pnlClass = trade.pnl > 0 ? 'result-profit' : trade.pnl < 0 ? 'result-loss' : '';
         const entryPrice = trade.entry >= 1 ? trade.entry.toFixed(2) : trade.entry.toFixed(6);
         const exitPrice = trade.exit > 0 ? (trade.exit >= 1 ? trade.exit.toFixed(2) : trade.exit.toFixed(6)) : '-';
         const displayQty = trade.quantity.toFixed(2);
+        const pnlText = `${trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)} USDT`;
 
         return `
             <tr>
-                <td style="text-align: left; padding-left: 12px;">${date}</td>
-                <td style="text-align: left;"><strong>${symbol}</strong></td>
-                <td style="text-align: center;">${typeBadge}</td>
-                <td style="text-align: right;">$${entryPrice}</td>
-                <td style="text-align: right;">${exitPrice !== '-' ? '$' + exitPrice : '-'}</td>
-                <td style="text-align: right;">${displayQty}</td>
-                <td style="text-align: center;">${trade.leverage}x</td>
-                <td style="text-align: right;" class="${pnlClass}"><strong>${trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)} USDT</strong></td>
-                <td style="text-align: center;"><strong>1:${trade.rrRatio}</strong></td>
-                <td style="text-align: center;">${resultBadge}</td>
-                <td style="text-align: center; padding-right: 12px;"><button class="btn-icon" onclick="deleteTrade(${trade.id})">Delete</button></td>
+                <td>${date}</td>
+                <td>${symbol}</td>
+                <td><span class="badge ${typeClass}">${typeText}</span></td>
+                <td>$${entryPrice}</td>
+                <td>${exitPrice !== '-' ? '$' + exitPrice : '-'}</td>
+                <td>${displayQty}</td>
+                <td>${trade.leverage}x</td>
+                <td class="${pnlClass}">${pnlText}</td>
+                <td>1:${trade.rrRatio}</td>
+                <td><span class="badge ${resultClass}">${resultText}</span></td>
+                <td><button class="btn-icon" onclick="deleteTrade(${trade.id})">Delete</button></td>
             </tr>
         `;
     }).join('');
