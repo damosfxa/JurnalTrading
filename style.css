@@ -251,6 +251,14 @@ body::before {
     to { opacity: 1; }
 }
 
+/* === GRID LAYOUT === */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
 /* === CARDS === */
 .card {
     background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
@@ -528,6 +536,8 @@ input[readonly] {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .trade-log-header h3 {
@@ -537,73 +547,72 @@ input[readonly] {
 .trade-log-actions {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
+}
+
+.time-filter {
+    padding: 6px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
 }
 
 .trade-log-container {
     overflow-x: auto;
     border-radius: 10px;
     border: 1px solid var(--border);
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
+    background: var(--bg-secondary);
 }
 
 .trade-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+    border-collapse: collapse;
     table-layout: fixed;
+    min-width: 1000px;
+}
+
+.trade-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg-primary);
 }
 
 .trade-table thead th {
-    padding: 12px 8px;
+    padding: 14px 10px;
     text-align: left;
     font-size: 11px;
     font-weight: 600;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: var(--bg-primary);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    vertical-align: middle;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
 }
 
-/* Fixed column widths */
-.trade-table th:nth-child(1),
-.trade-table td:nth-child(1) { width: 90px !important; text-align: left !important; padding-left: 12px !important; }  /* Date */
-.trade-table th:nth-child(2),
-.trade-table td:nth-child(2) { width: 100px !important; text-align: left !important; } /* Symbol */
-.trade-table th:nth-child(3),
-.trade-table td:nth-child(3) { width: 70px !important; text-align: center !important; }  /* Type */
-.trade-table th:nth-child(4),
-.trade-table td:nth-child(4) { width: 90px !important; text-align: right !important; }  /* Entry */
-.trade-table th:nth-child(5),
-.trade-table td:nth-child(5) { width: 90px !important; text-align: right !important; }  /* Exit */
-.trade-table th:nth-child(6),
-.trade-table td:nth-child(6) { width: 80px !important; text-align: right !important; }  /* Quantity */
-.trade-table th:nth-child(7),
-.trade-table td:nth-child(7) { width: 70px !important; text-align: center !important; }  /* Leverage */
-.trade-table th:nth-child(8),
-.trade-table td:nth-child(8) { width: 110px !important; text-align: right !important; } /* P&L */
-.trade-table th:nth-child(9),
-.trade-table td:nth-child(9) { width: 70px !important; text-align: center !important; }  /* R:R */
-.trade-table th:nth-child(10),
-.trade-table td:nth-child(10) { width: 80px !important; text-align: center !important; } /* Result */
-.trade-table th:nth-child(11),
-.trade-table td:nth-child(11) { width: 80px !important; text-align: center !important; padding-right: 12px !important; } /* Action */
+/* FIXED: Proper column alignment */
+.trade-table th:nth-child(1) { width: 100px; text-align: left; }    /* Date */
+.trade-table th:nth-child(2) { width: 110px; text-align: left; }    /* Symbol */
+.trade-table th:nth-child(3) { width: 80px; text-align: center; }   /* Type */
+.trade-table th:nth-child(4) { width: 100px; text-align: right; }   /* Entry */
+.trade-table th:nth-child(5) { width: 100px; text-align: right; }   /* Exit */
+.trade-table th:nth-child(6) { width: 90px; text-align: right; }    /* Quantity */
+.trade-table th:nth-child(7) { width: 80px; text-align: center; }   /* Leverage */
+.trade-table th:nth-child(8) { width: 120px; text-align: right; }   /* P&L */
+.trade-table th:nth-child(9) { width: 80px; text-align: center; }   /* R:R */
+.trade-table th:nth-child(10) { width: 90px; text-align: center; }  /* Result */
+.trade-table th:nth-child(11) { width: 90px; text-align: center; }  /* Action */
 
 .trade-table tbody tr {
     background: var(--bg-secondary);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-bottom: 1px solid var(--border);
-}
-
-.trade-table tbody td {
-    padding: 12px 8px;
-    font-size: 13px;
-    color: var(--text-primary);
-    vertical-align: middle;
+    position: relative;
 }
 
 .trade-table tbody tr::before {
@@ -620,7 +629,8 @@ input[readonly] {
 
 .trade-table tbody tr:hover {
     background: var(--bg-hover);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 20px var(--accent-glow);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateX(2px);
 }
 
 .trade-table tbody tr:hover::before {
@@ -628,79 +638,97 @@ input[readonly] {
 }
 
 .trade-table tbody td {
-    padding: 12px;
+    padding: 14px 10px;
     font-size: 13px;
+    color: var(--text-primary);
+    vertical-align: middle;
+    white-space: nowrap;
 }
+
+/* FIXED: Match td alignment with th */
+.trade-table td:nth-child(1) { text-align: left; }      /* Date */
+.trade-table td:nth-child(2) { text-align: left; }      /* Symbol */
+.trade-table td:nth-child(3) { text-align: center; }    /* Type */
+.trade-table td:nth-child(4) { text-align: right; }     /* Entry */
+.trade-table td:nth-child(5) { text-align: right; }     /* Exit */
+.trade-table td:nth-child(6) { text-align: right; }     /* Quantity */
+.trade-table td:nth-child(7) { text-align: center; }    /* Leverage */
+.trade-table td:nth-child(8) { text-align: right; }     /* P&L */
+.trade-table td:nth-child(9) { text-align: center; }    /* R:R */
+.trade-table td:nth-child(10) { text-align: center; }   /* Result */
+.trade-table td:nth-child(11) { text-align: center; }   /* Action */
 
 /* === BADGES === */
 .badge {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 5px 12px;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .badge-long {
     background: var(--success-soft);
     color: var(--success);
-    box-shadow: 0 0 10px var(--success-glow);
+    border: 1px solid var(--success);
 }
 
 .badge-short {
     background: var(--danger-soft);
     color: var(--danger);
-    box-shadow: 0 0 10px var(--danger-glow);
+    border: 1px solid var(--danger);
 }
 
 .badge-win {
     background: var(--success-soft);
     color: var(--success);
+    border: 1px solid var(--success);
     animation: pulseGreen 2s ease-in-out infinite;
 }
 
 @keyframes pulseGreen {
     0%, 100% {
-        box-shadow: 0 0 10px var(--success-glow);
+        box-shadow: 0 0 5px var(--success-glow);
     }
     50% {
-        box-shadow: 0 0 20px var(--success-glow);
+        box-shadow: 0 0 15px var(--success-glow);
     }
 }
 
 .badge-loss {
     background: var(--danger-soft);
     color: var(--danger);
+    border: 1px solid var(--danger);
     animation: pulseRed 2s ease-in-out infinite;
 }
 
 @keyframes pulseRed {
     0%, 100% {
-        box-shadow: 0 0 10px var(--danger-glow);
+        box-shadow: 0 0 5px var(--danger-glow);
     }
     50% {
-        box-shadow: 0 0 20px var(--danger-glow);
+        box-shadow: 0 0 15px var(--danger-glow);
     }
 }
 
 .badge-breakeven {
-    background: var(--warning-soft);
+    background: rgba(245, 158, 11, 0.1);
     color: var(--warning);
+    border: 1px solid var(--warning);
 }
 
 /* === PROFIT/LOSS === */
 .result-profit {
-    color: var(--success);
+    color: var(--success) !important;
     font-weight: 700;
-    text-shadow: 0 0 10px var(--success-glow);
 }
 
 .result-loss {
-    color: var(--danger);
+    color: var(--danger) !important;
     font-weight: 700;
-    text-shadow: 0 0 10px var(--danger-glow);
 }
 
 /* === EMPTY STATE === */
@@ -711,21 +739,95 @@ input[readonly] {
     font-size: 13px;
 }
 
+.empty-state td {
+    text-align: center !important;
+}
+
 /* === MANUAL ENTRY === */
 .manual-entry-section {
-    margin: 12px 0;
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+    border-radius: 14px;
+    border: 1px solid var(--border);
+}
+
+.manual-entry-section h3 {
+    margin-bottom: 16px;
+    color: var(--accent-light);
 }
 
 .manual-entry-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
+    margin-bottom: 12px;
+}
+
+.calculation-preview {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.calculation-preview h4 {
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+/* === PERFORMANCE TABLE === */
+.perf-table-container {
+    margin-bottom: 24px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.perf-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.perf-table thead {
+    background: var(--bg-tertiary);
+}
+
+.perf-table th {
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: 0.5px;
+}
+
+.perf-table td {
+    padding: 14px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    border: none;
+}
+
+.perf-table .perf-success {
+    color: var(--success);
+}
+
+.perf-table .perf-danger {
+    color: var(--danger);
 }
 
 /* === SCROLLBAR === */
 ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -754,59 +856,16 @@ input[readonly] {
     }
 }
 
-h3 span[style*="LIVE"] {
-    animation: pulse 2s ease-in-out infinite;
-}
-
-/* === PERFORMANCE TABLE === */
-.perf-table-container {
-    margin-bottom: 24px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.perf-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.perf-table thead {
-    background: var(--bg-tertiary);
-}
-
-.perf-table th {
-    padding: 10px 16px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-}
-
-.perf-table td {
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    text-align: center;
-    border: none;
-}
-
-.perf-table .perf-success {
-    color: var(--success);
-}
-
-.perf-table .perf-danger {
-    color: var(--danger);
-}
-
 /* === RESPONSIVE === */
+@media (max-width: 1024px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
     .header h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
     
     .tabs {
@@ -814,22 +873,51 @@ h3 span[style*="LIVE"] {
     }
     
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .manual-entry-grid {
         grid-template-columns: 1fr;
     }
     
-    .trade-table {
-        font-size: 12px;
-    }
-    
-    .trade-table tbody td {
-        padding: 12px 8px;
+    .trade-log-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
     
     .trade-log-actions {
+        width: 100%;
         flex-direction: column;
+    }
+    
+    .trade-table {
+        font-size: 11px;
+    }
+    
+    .trade-table thead th,
+    .trade-table tbody td {
+        padding: 10px 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 12px;
+    }
+    
+    .header {
+        padding: 16px 12px;
+    }
+    
+    .header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-value {
+        font-size: 20px;
     }
 }
