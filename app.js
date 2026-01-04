@@ -394,6 +394,7 @@ function addManualTrade() {
     alert('Trade added successfully!');
 }
 
+// === FIXED: RENDER TRADE HISTORY WITH CORRECT COLUMN ORDER ===
 function renderTradeHistory() {
     const tbody = document.getElementById('tradeTableBody');
     
@@ -403,38 +404,69 @@ function renderTradeHistory() {
     }
 
     tbody.innerHTML = AppState.trades.map(trade => {
-        const date = new Date(trade.date).toLocaleDateString();
-        const symbol = trade.symbol || '-';
+        // Format date
+        const date = new Date(trade.date).toLocaleDateString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric'
+        });
         
-        // Simple badges without nested spans
-        const typeText = trade.type === 'long' ? 'LONG' : 'SHORT';
+        // Get symbol
+        const symbol = trade.symbol || 'UNKNOWN';
+        
+        // Type badge
+        const typeLabel = trade.type === 'long' ? 'LONG' : 'SHORT';
         const typeClass = trade.type === 'long' ? 'badge-long' : 'badge-short';
         
-        let resultText = '';
-        let resultClass = '';
-        if (trade.result === 'win') { resultText = 'WIN'; resultClass = 'badge-win'; }
-        else if (trade.result === 'loss') { resultText = 'LOSS'; resultClass = 'badge-loss'; }
-        else if (trade.result === 'breakeven') { resultText = 'BE'; resultClass = 'badge-breakeven'; }
-        else { resultText = 'PENDING'; resultClass = ''; }
-
-        const pnlClass = trade.pnl > 0 ? 'result-profit' : trade.pnl < 0 ? 'result-loss' : '';
+        // Format prices
         const entryPrice = trade.entry >= 1 ? trade.entry.toFixed(2) : trade.entry.toFixed(6);
         const exitPrice = trade.exit > 0 ? (trade.exit >= 1 ? trade.exit.toFixed(2) : trade.exit.toFixed(6)) : '-';
+        
+        // Format quantity
         const displayQty = trade.quantity.toFixed(2);
-        const pnlText = `${trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)} USDT`;
+        
+        // Format leverage
+        const leverage = `${trade.leverage}x`;
+        
+        // Format P&L
+        const pnlClass = trade.pnl > 0 ? 'result-profit' : trade.pnl < 0 ? 'result-loss' : '';
+        const pnlSign = trade.pnl >= 0 ? '+' : '';
+        const pnlText = `${pnlSign}${trade.pnl.toFixed(2)} USDT`;
+        
+        // Format R:R
+        const rrText = `1:${trade.rrRatio}`;
+        
+        // Result badge
+        let resultLabel = '';
+        let resultClass = '';
+        if (trade.result === 'win') {
+            resultLabel = 'WIN';
+            resultClass = 'badge-win';
+        } else if (trade.result === 'loss') {
+            resultLabel = 'LOSS';
+            resultClass = 'badge-loss';
+        } else if (trade.result === 'breakeven') {
+            resultLabel = 'BE';
+            resultClass = 'badge-breakeven';
+        } else {
+            resultLabel = 'PENDING';
+            resultClass = '';
+        }
 
+        // IMPORTANT: Return row with exact column order matching HTML header
+        // Order: Date | Symbol | Type | Entry | Exit | Quantity | Leverage | P&L | R:R | Result | Action
         return `
             <tr>
                 <td>${date}</td>
                 <td>${symbol}</td>
-                <td><span class="badge ${typeClass}">${typeText}</span></td>
+                <td><span class="badge ${typeClass}">${typeLabel}</span></td>
                 <td>$${entryPrice}</td>
                 <td>${exitPrice !== '-' ? '$' + exitPrice : '-'}</td>
                 <td>${displayQty}</td>
-                <td>${trade.leverage}x</td>
+                <td>${leverage}</td>
                 <td class="${pnlClass}">${pnlText}</td>
-                <td>1:${trade.rrRatio}</td>
-                <td><span class="badge ${resultClass}">${resultText}</span></td>
+                <td>${rrText}</td>
+                <td><span class="badge ${resultClass}">${resultLabel}</span></td>
                 <td><button class="btn-icon" onclick="deleteTrade(${trade.id})">Delete</button></td>
             </tr>
         `;
