@@ -5,115 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Trading Calculator</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1>Crypto Trading Calculator</h1>
-            <p>Adaptive risk management with real-time market monitoring</p>
+            <h1>💰 JURNAL TRADING</h1>
+            <p>Smart profit tracking with auto-archive system</p>
         </header>
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" data-tab="calculator">Calculator</button>
-            <button class="tab-btn" data-tab="tracker">Trade History</button>
+            <button class="tab-btn active" data-tab="tracker">Trade History</button>
+            <button class="tab-btn" data-tab="monthly">Monthly Reports</button>
             <button class="tab-btn" data-tab="settings">Settings</button>
         </div>
 
-        <!-- Calculator Tab -->
-        <div class="tab-content active" id="calculator">
-            <div class="grid-2">
-                <!-- Left Column -->
-                <div>
-                    <!-- API Status - Compact -->
-                    <div class="card" style="padding: 12px; margin-bottom: 16px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 13px; font-weight: 600;">Bybit API</span>
-                            <span id="apiStatus" style="color: var(--success); font-size: 12px;">Checking...</span>
-                        </div>
+        <!-- Trade History Tab -->
+        <div class="tab-content active" id="tracker">
+            <!-- Wallet Balance Card -->
+            <div class="wallet-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div>
+                        <h3 style="margin: 0; font-size: 16px; font-weight: 700;">💼 Current Wallet</h3>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-secondary);">Your trading capital</p>
                     </div>
-
-                    <!-- Account & Position Settings Combined -->
-                    <div class="card" style="padding: 16px;">
-                        <h3 style="margin-bottom: 16px; font-size: 15px;">Account & Position Settings</h3>
-                        
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <label style="font-size: 12px;">Wallet Balance (USDT)</label>
-                            <input type="number" id="walletBalance" value="100" step="0.01" placeholder="0.00">
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-                            <div class="form-group" style="margin: 0;">
-                                <label style="font-size: 12px;">Risk % <span style="color: var(--accent); font-size: 10px;">AUTO</span></label>
-                                <input type="number" id="riskPercent" value="12" step="0.1" readonly style="background: var(--bg-secondary); cursor: not-allowed; font-size: 13px;">
-                            </div>
-                            <div class="form-group" style="margin: 0;">
-                                <label style="font-size: 12px;">Leverage <span style="color: var(--accent); font-size: 10px;">AUTO</span></label>
-                                <input type="number" id="defaultLeverage" value="18" step="1" readonly style="background: var(--bg-secondary); cursor: not-allowed; font-size: 13px;">
-                            </div>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <div class="info-box" style="padding: 8px;">
-                                <span class="info-label" style="font-size: 11px;">Risk Amount</span>
-                                <span class="info-value" id="totalRiskAmount" style="font-size: 13px;">$0.00</span>
-                            </div>
-                            <div class="form-group" style="margin: 0;">
-                                <label style="font-size: 12px;">Type</label>
-                                <select id="defaultPositionType" style="font-size: 13px;">
-                                    <option value="long">Long</option>
-                                    <option value="short">Short</option>
-                                </select>
-                            </div>
-                        </div>
+                    <div class="btc-price-mini">
+                        <div style="font-size: 10px; color: var(--text-muted);">BTC/USDT</div>
+                        <div id="btcPriceMini" style="font-size: 13px; font-weight: 600; color: var(--text-primary);">Loading...</div>
                     </div>
                 </div>
-
-                <!-- Right Column -->
-                <div>
-                    <!-- Market Condition - Compact -->
-                    <div class="card" style="padding: 16px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <h3 style="margin: 0; font-size: 15px;">Market Condition</h3>
-                            <span style="color: var(--success); font-size: 10px;">● LIVE</span>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <div class="info-box" style="padding: 8px;">
-                                <span class="info-label" style="font-size: 11px;">Volatility</span>
-                                <span class="info-value" id="priceStatus" style="font-size: 13px;">
-                                    <span style="color: var(--warning);">⚪</span> Checking
-                                </span>
-                            </div>
-                            <div class="info-box" style="padding: 8px;">
-                                <span class="info-label" style="font-size: 11px;">Time</span>
-                                <span class="info-value" id="lastUpdate" style="font-size: 13px; font-family: monospace;">-</span>
-                            </div>
-                        </div>
+                <input type="number" id="walletBalance" value="100" step="0.01" placeholder="0.00" style="width: 100%; padding: 14px; font-size: 20px; font-weight: 700; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary);">
+                <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div style="text-align: center; padding: 10px; background: var(--bg-primary); border-radius: 8px; border: 1px solid var(--border);">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Target (120%)</div>
+                        <div style="font-size: 18px; font-weight: 700; color: var(--accent);" id="quickTarget">$120</div>
                     </div>
-
-                    <!-- Info Panel - Compact -->
-                    <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border); padding: 16px; margin-top: 16px;">
-                        <h4 style="margin-bottom: 8px; color: var(--accent); font-size: 13px;">How It Works</h4>
-                        <ul style="font-size: 11px; line-height: 1.6; color: var(--text-secondary); padding-left: 16px; margin: 0;">
-                            <li>Set wallet balance (auto-saved)</li>
-                            <li>Risk & leverage adjust by:
-                                <ul style="margin: 2px 0;">
-                                    <li>Wallet size</li>
-                                    <li>Market volatility</li>
-                                </ul>
-                            </li>
-                            <li>Add trades in Tracker tab</li>
-                            <li>Monitor real-time conditions</li>
-                        </ul>
+                    <div style="text-align: center; padding: 10px; background: var(--bg-primary); border-radius: 8px; border: 1px solid var(--border);">
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">Target Balance</div>
+                        <div style="font-size: 18px; font-weight: 700; color: var(--success);" id="quickEndBalance">$220</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Tracker Tab -->
-        <div class="tab-content" id="tracker">
+            <!-- Monthly Goal Progress -->
+            <div class="goal-progress-card">
+                <div class="goal-header">
+                    <div>
+                        <h3 style="margin: 0; font-size: 18px; font-weight: 700;">🎯 Monthly Goal</h3>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-secondary);" id="goalMonthName">January 2026</p>
+                    </div>
+                    <div class="goal-badge" id="goalBadge" style="display: none;">
+                        <span class="badge badge-win">🏆 ACHIEVED!</span>
+                    </div>
+                </div>
+                
+                <div class="goal-stats-enhanced">
+                    <div class="goal-stat-box">
+                        <span class="goal-label">Starting</span>
+                        <span class="goal-value" id="goalStartBalance">$100</span>
+                    </div>
+                    <div class="goal-stat-box">
+                        <span class="goal-label">Target Profit</span>
+                        <span class="goal-value" id="goalTargetProfit">$120</span>
+                    </div>
+                    <div class="goal-stat-box">
+                        <span class="goal-label">Current Profit</span>
+                        <span class="goal-value" id="goalCurrentProfit">$0</span>
+                    </div>
+                    <div class="goal-stat-box">
+                        <span class="goal-label">Current Balance</span>
+                        <span class="goal-value" id="goalCurrentBalance">$100</span>
+                    </div>
+                    <div class="goal-stat-box">
+                        <span class="goal-label">Remaining</span>
+                        <span class="goal-value" id="goalRemaining">$120</span>
+                    </div>
+                    <div class="goal-stat-box">
+                        <span class="goal-label">Progress</span>
+                        <span class="goal-value" id="goalPercent">0%</span>
+                    </div>
+                </div>
+
+                <div class="goal-progress-bar">
+                    <div class="goal-progress-fill" id="goalProgressFill" style="width: 0%;">
+                        <span class="goal-progress-text" id="goalProgressText">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Month Banner (NO ARCHIVE BUTTON!) -->
+            <div class="current-month-banner">
+                <div>
+                    <h2 id="currentMonthTitle" style="margin: 0; font-size: 18px; font-weight: 700;">📅 January 2026</h2>
+                    <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-secondary);">Auto-archives at month end</p>
+                </div>
+            </div>
+
             <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
@@ -129,43 +118,45 @@
                     <div class="stat-value" id="totalPnL">$0.00</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Avg Risk/Reward</div>
+                    <div class="stat-label">Avg R:R</div>
                     <div class="stat-value" id="avgRR">0:0</div>
                 </div>
             </div>
 
-            <!-- Performance Stats - Horizontal Table Format -->
-            <div class="perf-table-container">
-                <table class="perf-table">
-                    <thead>
-                        <tr>
-                            <th>Streak</th>
-                            <th>Best</th>
-                            <th>Worst</th>
-                            <th>Avg Win</th>
-                            <th>Avg Loss</th>
-                            <th>Profit Factor</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="currentStreak">-</td>
-                            <td class="perf-success" id="bestTrade">-</td>
-                            <td class="perf-danger" id="worstTrade">-</td>
-                            <td id="avgWin">-</td>
-                            <td id="avgLoss">-</td>
-                            <td id="profitFactor">-</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Performance Stats -->
+            <div class="perf-table-wrapper">
+                <div class="perf-table-container">
+                    <table class="perf-table">
+                        <thead>
+                            <tr>
+                                <th>Streak</th>
+                                <th>Best Trade</th>
+                                <th>Worst Trade</th>
+                                <th>Avg Win</th>
+                                <th>Avg Loss</th>
+                                <th>Profit Factor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="currentStreak">-</td>
+                                <td class="perf-success" id="bestTrade">-</td>
+                                <td class="perf-danger" id="worstTrade">-</td>
+                                <td id="avgWin">-</td>
+                                <td id="avgLoss">-</td>
+                                <td id="profitFactor">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- Manual Entry (MOVED TO TOP) -->
+            <!-- Manual Entry -->
             <div class="manual-entry-section">
-                <h3>Add Trade (Manual Entry)</h3>
+                <h3>📝 Add Trade</h3>
                 <div class="manual-entry-grid">
                     <div class="form-group">
-                        <label>Symbol/Pair</label>
+                        <label>Symbol</label>
                         <input type="text" id="manualSymbol" placeholder="WIFUSDT" maxlength="20">
                     </div>
                     <div class="form-group">
@@ -173,21 +164,20 @@
                         <input type="number" id="manualEntry" step="0.00001" placeholder="0.3710">
                     </div>
                     <div class="form-group">
-                        <label>Take Profit (TP)</label>
+                        <label>Take Profit</label>
                         <input type="number" id="manualTP" step="0.00001" placeholder="0.4766">
                     </div>
                     <div class="form-group">
-                        <label>Stop Loss (SL)</label>
+                        <label>Stop Loss</label>
                         <input type="number" id="manualSL" step="0.00001" placeholder="0.3518">
                     </div>
                     <div class="form-group">
-                        <label>Quantity (Contracts)</label>
+                        <label>Quantity</label>
                         <input type="number" id="manualQty" step="0.01" placeholder="150">
-                        <small style="color: var(--text-muted); font-size: 11px;">Direct quantity from Bybit</small>
                     </div>
                     <div class="form-group">
                         <label>Leverage</label>
-                        <input type="number" id="manualLeverage" step="1" min="1" max="125" value="10" placeholder="10">
+                        <input type="number" id="manualLeverage" step="1" min="1" max="125" value="10">
                     </div>
                     <div class="form-group">
                         <label>Type</label>
@@ -200,45 +190,71 @@
                         <label>Result</label>
                         <select id="manualResult">
                             <option value="pending">Pending</option>
-                            <option value="win">Win (TP Hit)</option>
-                            <option value="loss">Loss (SL Hit)</option>
+                            <option value="win">Win</option>
+                            <option value="loss">Loss</option>
                             <option value="breakeven">Break Even</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" id="addManualTradeBtn" style="grid-column: span 2;">Calculate & Add Trade</button>
+                    <button class="btn btn-primary" id="addManualTradeBtn" style="grid-column: span 2;">
+                        ➕ Add Trade
+                    </button>
                 </div>
-                <div class="calculation-preview" id="calculationPreview" style="margin-top: 16px; padding: 16px; background: var(--bg-secondary); border-radius: 8px; display: none;">
-                    <h4 style="margin-bottom: 12px; color: var(--accent);">Preview Calculation:</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
-                        <div>Position Value:</div>
-                        <div id="previewPositionValue" style="color: var(--text-primary); font-weight: 600;">-</div>
-                        <div>If TP Hit:</div>
-                        <div id="previewTPProfit" style="color: var(--success); font-weight: 600;">-</div>
-                        <div>If SL Hit:</div>
-                        <div id="previewSLLoss" style="color: var(--danger); font-weight: 600;">-</div>
-                        <div>Risk/Reward:</div>
-                        <div id="previewRR" style="color: var(--accent); font-weight: 600;">-</div>
+                
+                <!-- Calculation Preview -->
+                <div class="calculation-preview" id="calculationPreview">
+                    <h4 style="margin-bottom: 12px; color: var(--accent); font-size: 14px;">📊 Preview:</h4>
+                    <div class="preview-grid">
+                        <div class="preview-item">
+                            <span class="preview-label">Position:</span>
+                            <span class="preview-value" id="previewPositionValue">-</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="preview-label">If TP:</span>
+                            <span class="preview-value success" id="previewTPProfit">-</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="preview-label">If SL:</span>
+                            <span class="preview-value danger" id="previewSLLoss">-</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="preview-label">R:R:</span>
+                            <span class="preview-value accent" id="previewRR">-</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Trade History (MOVED TO BOTTOM) -->
+            <!-- Trade History -->
             <div class="trade-log-section">
                 <div class="trade-log-header">
-                    <h3>📋 Trade History</h3>
+                    <h3>📋 Trade List</h3>
                     <div class="trade-log-actions">
                         <select id="timeFilter" class="time-filter">
-                            <option value="all">All Time</option>
+                            <option value="all">All</option>
                             <option value="today">Today</option>
-                            <option value="week">This Week</option>
-                            <option value="month">This Month</option>
+                            <option value="week">Week</option>
+                            <option value="month">Month</option>
                         </select>
-                        <button class="btn btn-small" id="exportBtn">📥 Export CSV</button>
-                        <button class="btn btn-small btn-danger" id="clearHistoryBtn">🗑️ Clear All</button>
+                        <button class="btn btn-small" id="exportBtn">📥 CSV</button>
+                        <button class="btn btn-small btn-danger" id="clearHistoryBtn">🗑️ Clear</button>
                     </div>
                 </div>
+                
                 <div class="trade-log-container">
                     <table class="trade-table">
+                        <colgroup>
+                            <col style="width: 90px;">
+                            <col style="width: 100px;">
+                            <col style="width: 70px;">
+                            <col style="width: 95px;">
+                            <col style="width: 95px;">
+                            <col style="width: 80px;">
+                            <col style="width: 60px;">
+                            <col style="width: 110px;">
+                            <col style="width: 70px;">
+                            <col style="width: 90px;">
+                            <col style="width: 90px;">
+                        </colgroup>
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -246,8 +262,8 @@
                                 <th>Type</th>
                                 <th>Entry</th>
                                 <th>Exit</th>
-                                <th>Quantity</th>
-                                <th>Leverage</th>
+                                <th>Qty</th>
+                                <th>Lev</th>
                                 <th>P&L</th>
                                 <th>R:R</th>
                                 <th>Result</th>
@@ -256,10 +272,147 @@
                         </thead>
                         <tbody id="tradeTableBody">
                             <tr class="empty-state">
-                                <td colspan="11">No trades recorded yet. Add your trades above.</td>
+                                <td colspan="11">No trades yet. Add your first trade above! 👆</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Reports Tab (NEW ORGANIZED STRUCTURE!) -->
+        <div class="tab-content" id="monthly">
+            <div class="monthly-reports-header">
+                <h2>📅 Monthly Trading Reports</h2>
+                <p>Organized by month and year</p>
+            </div>
+
+            <!-- Charts -->
+            <div id="chartsSection" style="display: none;">
+                <div class="charts-grid">
+                    <div class="chart-card full-width">
+                        <div class="chart-header">
+                            <h3>📈 Equity Curve</h3>
+                            <p>Capital growth over time</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="equityCurveChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>🎯 Win Rate Trend</h3>
+                            <p>Monthly performance</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="winRateChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>💰 Withdrawal History</h3>
+                            <p>Money taken vs reinvested</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="withdrawalChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organized Monthly Archives (JAN-DEC) -->
+            <div class="monthly-archives-header">
+                <h3>📊 Archives by Month</h3>
+            </div>
+            <div id="monthlyReportsContainer">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <!-- Detail Modal -->
+            <div id="monthlyDetailModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalMonthTitle">January 2026</h3>
+                        <button class="modal-close" id="closeModalBtn">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="withdrawal-summary">
+                            <div class="withdrawal-stat">
+                                <span class="ws-label">Start</span>
+                                <span class="ws-value" id="modalStartBalance">$100</span>
+                            </div>
+                            <div class="withdrawal-stat">
+                                <span class="ws-label">Profit</span>
+                                <span class="ws-value success" id="modalTotalProfit">$120</span>
+                            </div>
+                            <div class="withdrawal-stat">
+                                <span class="ws-label">Withdrawn</span>
+                                <span class="ws-value warning" id="modalWithdrawn">$80</span>
+                            </div>
+                            <div class="withdrawal-stat">
+                                <span class="ws-label">Compounded</span>
+                                <span class="ws-value accent" id="modalCompounded">$40</span>
+                            </div>
+                            <div class="withdrawal-stat">
+                                <span class="ws-label">End</span>
+                                <span class="ws-value" id="modalEndBalance">$140</span>
+                            </div>
+                        </div>
+                        <div class="stats-grid" style="margin-bottom: 24px;">
+                            <div class="stat-card">
+                                <div class="stat-label">Trades</div>
+                                <div class="stat-value" id="modalTotalTrades">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Win Rate</div>
+                                <div class="stat-value" id="modalWinRate">0%</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Best</div>
+                                <div class="stat-value" id="modalBestTrade">$0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">R:R</div>
+                                <div class="stat-value" id="modalAvgRR">0:0</div>
+                            </div>
+                        </div>
+                        <h4 style="margin-bottom: 12px;">Trade History</h4>
+                        <div class="trade-log-container">
+                            <table class="trade-table">
+                                <colgroup>
+                                    <col style="width: 90px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 70px;">
+                                    <col style="width: 95px;">
+                                    <col style="width: 95px;">
+                                    <col style="width: 80px;">
+                                    <col style="width: 60px;">
+                                    <col style="width: 110px;">
+                                    <col style="width: 70px;">
+                                    <col style="width: 90px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Symbol</th>
+                                        <th>Type</th>
+                                        <th>Entry</th>
+                                        <th>Exit</th>
+                                        <th>Qty</th>
+                                        <th>Lev</th>
+                                        <th>P&L</th>
+                                        <th>R:R</th>
+                                        <th>Result</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modalTradeTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" id="exportMonthBtn">📥 Export</button>
+                        <button class="btn btn-danger" id="deleteMonthBtn">🗑️ Delete</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -268,7 +421,28 @@
         <div class="tab-content" id="settings">
             <div class="grid-2">
                 <div class="card">
-                    <h3>Trading Fees</h3>
+                    <h3>🎯 Target Settings</h3>
+                    <div class="form-group">
+                        <label>Target ROI (%)</label>
+                        <input type="number" id="targetROIPercent" value="120" step="10" min="10" max="500">
+                        <small style="color: var(--text-muted); font-size: 11px;">% profit target per month</small>
+                    </div>
+                    <button class="btn btn-primary" id="saveTargetBtn">💾 Save</button>
+                </div>
+                <div class="card">
+                    <h3>💰 Withdrawal Strategy</h3>
+                    <div class="form-group">
+                        <label>Withdrawal %</label>
+                        <input type="number" id="withdrawalPercent" value="67" step="1" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Compound %</label>
+                        <input type="number" id="compoundPercent" value="33" readonly style="background: var(--bg-secondary); cursor: not-allowed;">
+                    </div>
+                    <button class="btn btn-primary" id="saveWithdrawalBtn">💾 Save</button>
+                </div>
+                <div class="card">
+                    <h3>💸 Trading Fees</h3>
                     <div class="form-group">
                         <label>Taker Fee (%)</label>
                         <input type="number" id="takerFee" value="0.055" step="0.001">
@@ -277,21 +451,14 @@
                         <label>Maker Fee (%)</label>
                         <input type="number" id="makerFee" value="0.02" step="0.001">
                     </div>
-                    <button class="btn btn-primary" id="saveFeesBtn">Save Fees</button>
+                    <button class="btn btn-primary" id="saveFeesBtn">Save</button>
                 </div>
-
                 <div class="card">
-                    <h3>Data Management</h3>
-                    <div class="form-group">
-                        <button class="btn btn-secondary" id="exportDataBtn" style="width: 100%;">Export All Data (JSON)</button>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-secondary" id="importDataBtn" style="width: 100%;">Import Data (JSON)</button>
-                        <input type="file" id="importFileInput" accept=".json" style="display: none;">
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-danger" id="resetBtn" style="width: 100%;">Reset All Data</button>
-                    </div>
+                    <h3>💾 Data</h3>
+                    <button class="btn btn-secondary" id="exportDataBtn" style="width: 100%; margin-bottom: 8px;">📤 Export JSON</button>
+                    <button class="btn btn-secondary" id="importDataBtn" style="width: 100%; margin-bottom: 8px;">📥 Import JSON</button>
+                    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+                    <button class="btn btn-danger" id="resetBtn" style="width: 100%;">⚠️ Reset All</button>
                 </div>
             </div>
         </div>
