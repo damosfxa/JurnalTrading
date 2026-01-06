@@ -1,7 +1,7 @@
 // === APP STATE ===
 const AppState = {
     currentMonthTrades: [],
-    monthlyArchives: [], // Format: { year: 2026, month: 1, monthName: 'January', ... }
+    monthlyArchives: [], // Format: { year: 2025, month: 1, monthName: 'January', ... }
     settings: {
         takerFee: 0.055,
         makerFee: 0.02,
